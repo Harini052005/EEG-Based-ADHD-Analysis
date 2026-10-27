@@ -1,0 +1,64 @@
+================================================================================
+PHASE 1 EXECUTION REPORT: DATASET AUDIT & SIGNAL VERIFICATION
+================================================================================
+Phase Name: Phase 1 - Dataset Inspection & Quality Audit
+Date Completed: October 2026
+Dataset Source: Nasrabadi Pediatric ADHD EEG Dataset (Shahed University / IEEE)
+File Analyzed: data/raw/adhdata.csv (254.90 MB)
+
+--------------------------------------------------------------------------------
+1. OBJECTIVE OF THIS PHASE
+--------------------------------------------------------------------------------
+Verify participant count, class balance, sampling rate, physical channels, and
+absence of missing values before designing any preprocessing or modeling steps.
+Prevent ungrounded assumptions by analyzing the actual data file.
+
+--------------------------------------------------------------------------------
+2. VERIFIED SPECIFICATIONS & FINDINGS
+--------------------------------------------------------------------------------
+* Total Recorded Samples: 2,166,383 rows across 21 columns
+* Total Participants (Children): 121
+    - ADHD Group: 61 children (e.g., v1p, v10p, v12p...)
+    - Healthy Control Group: 60 children (e.g., v1c, v2c, v3c...)
+* Sampling Frequency (fs): 128 Hz
+* Recording Length per Participant:
+    - Minimum duration: 62.4 seconds (7,983 samples)
+    - Maximum duration: 337.9 seconds (43,252 samples)
+    - Mean duration: 139.9 seconds (17,904 samples)
+* Scalp EEG Channels: Exactly 19 standard 10-20 channels verified:
+    [Fp1, Fp2, F3, F4, C3, C4, P3, P4, O1, O2, F7, F8, T7, T8, P7, P8, Fz, Cz, Pz]
+* Metadata Columns:
+    - 'Class': Categorical label ('ADHD' or 'Control')
+    - 'ID': Unique participant identifier string
+* Missing Values (NaN / Nulls): Exactly 0 missing values detected across all channels.
+
+--------------------------------------------------------------------------------
+3. SIGNAL VISUALIZATION
+--------------------------------------------------------------------------------
+A 19-channel signal trace of participant v10p (ADHD) for the first 5 seconds was
+plotted and saved to:
+  results/figures/sample_raw_eeg.png
+
+Key Observations:
+- Frontal channels (Fp1, Fp2) exhibit characteristic ocular blink artifacts at
+  t = 0.5s and t = 2.8s.
+- Central and parietal channels (Cz, Pz) exhibit continuous rhythmic oscillations.
+- No flatlined or dead channels detected.
+
+--------------------------------------------------------------------------------
+4. SCIENTIFIC & ANTI-LEAKAGE VERIFICATION
+--------------------------------------------------------------------------------
+- The presence of the unique participant 'ID' column on every row ensures that
+  we can implement strict subject-independent splitting (StratifiedGroupKFold).
+- Data leakage prevention rule is fully supported by the dataset format.
+
+--------------------------------------------------------------------------------
+5. ARTIFACTS PRODUCED IN PHASE 1
+--------------------------------------------------------------------------------
+- dataset_audit.md                     (Full markdown audit report)
+- src/inspect_data.py                  (Executable audit script)
+- results/figures/sample_raw_eeg.png   (19-channel EEG trace)
+- documents/phase_1_dataset_audit.txt  (This summary documentation file)
+
+STATUS: PHASE 1 COMPLETED AND VERIFIED.
+================================================================================
