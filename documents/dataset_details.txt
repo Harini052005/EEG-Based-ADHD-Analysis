@@ -1,0 +1,175 @@
+================================================================================
+EEG-BASED ADHD ANALYSIS: DATASET DETAILS & PROJECT STRUCTURE REFERENCE
+================================================================================
+Project Title: ADHD Analysis Using EEG: Testing Accuracy with Fewer Channels and Noise
+Context: Academic Mini Project / Research Prototype
+Last Updated: October 2026
+
+--------------------------------------------------------------------------------
+1. PROJECT OBJECTIVES & CORE RESEARCH QUESTIONS
+--------------------------------------------------------------------------------
+This project investigates two central research questions using machine learning
+and signal processing:
+
+  [Q1] Channel Reduction:
+       Can machine learning models reliably detect ADHD patterns using a smaller,
+       predefined subset of EEG channels (e.g., 4-5 frontal/central electrodes)
+       compared to the full 19-channel clinical montage?
+
+  [Q2] Noise Robustness:
+       How does performance degrade when EEG signals are corrupted by controlled,
+       simulated noise (e.g., environmental or movement artifacts)? Does the
+       reduced-channel model suffer more or maintain comparable stability?
+
+* IMPORTANT ETHICAL & SCIENTIFIC PRINCIPLE:
+  This system is an academic research prototype and NOT a clinical diagnostic tool.
+  Band powers and Theta/Beta ratios (TBR) are exploratory features, not diagnostic
+  markers. Dataset labels are treated purely as research labels.
+
+
+--------------------------------------------------------------------------------
+2. DATASET SPECIFICATIONS (NASRABADI PEDIATRIC ADHD EEG DATASET)
+--------------------------------------------------------------------------------
+The project utilizes the benchmark pediatric EEG dataset collected by researchers
+at Shahed University (Ali Motie Nasrabadi et al.):
+
+* Dataset Name: EEG Dataset for ADHD (61 ADHD and 60 Healthy Children)
+* Official DOI: 10.21227/rzfh-zn36 (IEEE DataPort)
+* Total Participants: 121 children
+    - ADHD Group: 61 children (diagnosed by psychiatrist via DSM-IV criteria)
+    - Control Group: 60 age-matched healthy children
+* Participant Age Range: 7 to 12 years old (both boys and girls)
+* Sampling Frequency: 128 Hz
+* Reference Electrodes: Ear lobes (A1 and A2)
+* Number of Channels: 19 scalp EEG channels
+* Channel Layout: International Standard 10-20 Montage
+    Frontal:   Fp1, Fp2, F7, F3, Fz, F4, F8
+    Central:   C3, Cz, C4
+    Temporal:  T3, T4, T5, T6
+    Parietal:  P3, Pz, P4
+    Occipital: O1, O2
+* Recording Paradigm:
+    Task-based recording during a visual attention task. Children were shown
+    images containing a variable number of cartoon characters and asked to count
+    them. The display duration depended on the child's response speed to sustain
+    continuous cognitive engagement.
+
+
+--------------------------------------------------------------------------------
+3. FULL MONTAGE VS. CANDIDATE REDUCED MONTAGE
+--------------------------------------------------------------------------------
+* Full Montage (19 Channels):
+  All standard 10-20 channels:
+  [Fp1, Fp2, F7, F3, Fz, F4, F8, T3, C3, Cz, C4, T4, T5, P3, Pz, P4, T6, O1, O2]
+
+* Literature-Justified Reduced Montage Candidate (e.g., 4 to 5 Channels):
+  Frontal and Central midline/bilateral sites:
+  [Fz, Cz, F3, F4] (or optionally adding Pz)
+  - Scientific Justification: Frontal-central regions reflect executive control,
+    attention orienting, and working memory circuits commonly studied in ADHD
+    literature.
+  - RULE: Channel sets must be fixed BEFORE testing. Never pick channels based
+    on test-set scores to prevent data snooping.
+
+
+--------------------------------------------------------------------------------
+4. HOW TO DOWNLOAD AND PLACE THE DATASET
+--------------------------------------------------------------------------------
+Download Source Options:
+
+  Option A (Kaggle - Free & Immediate):
+    - URL 1: https://www.kaggle.com/datasets/eeg-dataset-for-adhd
+    - URL 2: https://www.kaggle.com/datasets/eeg-adhd-nasrabadi-mat
+    - Action: Download the zip file and extract.
+
+  Option B (IEEE DataPort - Official Open Access Archive):
+    - URL: https://ieee-dataport.org/open-access/eeg-data-adhd-control-children
+    - DOI: 10.21227/rzfh-zn36
+    - Action: Download the public package.
+
+Where to Place Files:
+  Place extracted .mat (or .csv) recording files inside:
+  EEG-Based ADHD Analysis/data/raw/
+
+Expected directory contents:
+  data/raw/
+    ├── ADHD_part1/     (or v1p.mat, v2p.mat, ...)
+    └── Control_part1/  (or v1c.mat, v2c.mat, ...)
+
+
+--------------------------------------------------------------------------------
+5. PROJECT DIRECTORY STRUCTURE
+--------------------------------------------------------------------------------
+The project follows a standard, modular scientific structure:
+
+EEG-Based ADHD Analysis/
+│
+├── documents/
+│   └── dataset_details.txt       <- This reference documentation file
+│
+├── data/
+│   ├── README.md                 <- Dataset instructions and source documentation
+│   ├── raw/                      <- Unprocessed EEG recordings (never modified)
+│   └── processed/                <- Epochs and extracted feature matrices
+│
+├── src/
+│   ├── __init__.py
+│   ├── inspect_data.py           <- Milestone 1: Inspects raw files and logs metadata
+│   ├── preprocess.py             <- Milestone 2: Bandpass/notch filtering & epoching
+│   ├── extract_features.py       <- Milestone 3: Welch PSD (Theta, Alpha, Beta, TBR)
+│   ├── split_data.py             <- Milestone 4: Participant-wise StratifiedGroupKFold
+│   ├── train_models.py           <- Milestone 5: Random Forest & SVM baseline pipelines
+│   ├── channel_experiments.py    <- Milestone 6: Full montage vs. reduced montage
+│   └── noise_simulation.py       <- Milestone 7: Controlled additive noise testing
+│
+├── notebooks/
+│   ├── 01_dataset_exploration.ipynb   <- Data visualization and signal traces
+│   └── 02_experiments_summary.ipynb    <- Graphs, comparisons, and metrics
+│
+├── results/
+│   ├── figures/                  <- Plots (raw vs filtered, PSD, degradation curves)
+│   └── metrics/                  <- CSV/JSON files of model accuracies and fold metrics
+│
+├── report/
+│   └── project_report.md         <- Academic report (methodology, results, discussion)
+│
+├── dataset_audit.md              <- Output of Phase 1 audit
+├── requirements.txt              <- Python dependencies (numpy, scipy, pandas, mne, etc.)
+└── SKILL_updated.md              <- Project execution guide and boundary rules
+
+
+--------------------------------------------------------------------------------
+6. CRITICAL SCIENTIFIC RULES & ANTI-LEAKAGE PROTOCOL
+--------------------------------------------------------------------------------
+1. Participant-Wise Splitting (Subject-Independent):
+   - A random split of EEG segments mixes segments of the SAME child into both
+     train and test sets. This causes severe data leakage and artificially high
+     accuracy.
+   - All epochs belonging to one child must remain strictly inside ONE fold
+     (using StratifiedGroupKFold or GroupKFold).
+
+2. Pipeline Integrity:
+   - Feature scaling (StandardScaler), feature selection, and tuning must be
+     fitted ONLY on training folds inside a scikit-learn Pipeline. Never fit on
+     the whole dataset before splitting.
+
+3. Honest Reporting:
+   - Report Balanced Accuracy, Sensitivity, Specificity, F1-Score, and Confusion
+     Matrices. If reduced channels perform worse or noise drops accuracy sharply,
+     report it truthfully as a valid scientific finding.
+
+
+--------------------------------------------------------------------------------
+7. PROJECT PHASES & ROADMAP
+--------------------------------------------------------------------------------
+Phase 1: Dataset Verification & Audit (Inspect files, confirm fs=128Hz, channels)
+Phase 2: Preprocessing (Bandpass 0.5-30 Hz, notch filter, quality checks)
+Phase 3: Feature Extraction (Welch PSD: Theta 4-8Hz, Alpha 8-13Hz, Beta 13-30Hz, TBR)
+Phase 4: Subject-Independent Cross-Validation setup (StratifiedGroupKFold)
+Phase 5: Baseline Classifiers (Random Forest & SVM on full 19 channels)
+Phase 6: Channel Reduction Experiment (Compare full 19 channels vs. 4-5 channels)
+Phase 7: Noise Robustness Simulation (Add controlled noise levels to test sets)
+Phase 8: Optional Extensions (Missing channel simulations & SHAP attribution stability)
+Phase 9: Reproducibility Checks & Metrics Validation
+Phase 10: Academic Deliverables (Report, 10-12 slide PPT, 5-7 min demo)
+================================================================================
