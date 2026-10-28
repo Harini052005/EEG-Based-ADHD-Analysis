@@ -1,0 +1,75 @@
+================================================================================
+PHASE 2 EXECUTION REPORT: SIGNAL PREPROCESSING & EPOCHING
+================================================================================
+Phase Name: Phase 2 - Signal Preprocessing, Filtering & Epoching
+Date Completed: October 2026
+Input File: data/raw/adhdata.csv (2,166,383 samples, 121 participants)
+Output Files:
+  - data/processed/preprocessed_epochs.npz
+  - data/processed/preprocessing_summary.csv
+  - results/figures/raw_vs_filtered_eeg.png
+
+--------------------------------------------------------------------------------
+1. PREPROCESSING SPECIFICATIONS & PARAMETERS
+--------------------------------------------------------------------------------
+* Sampling Frequency (fs): 128 Hz
+* Raw Signal Calibration: Scaled by 0.1 (raw ADC -> true microvolts uV)
+    - Clean baseline amplitude matches standard pediatric range: ~20-80 uV
+* Continuous Zero-Phase Filtering:
+    - Highpass Cutoff: 0.5 Hz (removes DC baseline wander and sweat drift)
+    - Lowpass Cutoff: 30.0 Hz (Butterworth 4th-order forward-backward filtfilt)
+    - Notch Filter: 50.0 Hz (Q=30.0, mains frequency attenuation)
+    - Scientific Rationale: Preserves Theta (4-8 Hz), Alpha (8-13 Hz), and Beta (13-30 Hz)
+      while attenuating high-frequency muscle (EMG) noise and mains hum.
+* Epoching Strategy:
+    - Epoch Duration: 2.0 seconds (256 samples at 128 Hz)
+    - Window Overlap: 0% (strictly non-overlapping windows)
+    - Filter Application: Continuous filtering applied BEFORE epoching to prevent
+      boundary transient edge effects.
+* Artifact Rejection Protocol:
+    - Peak-to-Peak Amplitude Threshold: 150.0 uV
+    - Any epoch with max(amplitude) - min(amplitude) > 150.0 uV on any channel
+      is rejected as an ocular blink, movement burst, or muscle burst artifact.
+
+--------------------------------------------------------------------------------
+2. EPOCH RETENTION & REJECTION STATISTICS
+--------------------------------------------------------------------------------
+* Total Raw Epochs Extracted: 8,400
+* Total Clean Epochs Retained: 5,136 (61.14%)
+* Total Artifact Epochs Rejected: 3,264 (38.86%)
+
+Class-Specific Breakdown:
+  - ADHD Group (61 Children):
+      Total Raw Epochs: 4,683
+      Accepted Epochs:  2,930 (62.57%)
+      Rejected Epochs:  1,753 (37.43%)
+  - Control Group (60 Children):
+      Total Raw Epochs: 3,717
+      Accepted Epochs:  2,206 (59.35%)
+      Rejected Epochs:  1,511 (40.65%)
+
+--------------------------------------------------------------------------------
+3. PARTICIPANT INTEGRITY & ZERO EXCLUSION GUARANTEE
+--------------------------------------------------------------------------------
+* Number of Unique Participants Evaluated: 121
+* Number of Participants with Valid Epochs: 121
+* Participants Completely Excluded: 0 (100% of participants retained)
+  Every single child (121/121) has retained clean, usable epochs.
+  Minimum clean epochs per child: 2
+  Maximum clean epochs per child: 104
+  Mean clean epochs per child:    42.4
+
+--------------------------------------------------------------------------------
+4. ANTI-LEAKAGE VERIFICATION
+--------------------------------------------------------------------------------
+- All epochs retain their participant group label ('ID') and diagnosis ('Class').
+- No participant data was mixed or normalized across the entire dataset.
+- In Phase 4, StratifiedGroupKFold will ensure all epochs from any single child
+  stay strictly within either the train fold or test fold.
+
+--------------------------------------------------------------------------------
+5. STATUS & NEXT STEPS
+--------------------------------------------------------------------------------
+STATUS: PHASE 2 COMPLETED AND VERIFIED.
+Next Phase: Phase 3 - Feature Extraction (Welch PSD: Theta, Alpha, Beta, TBR)
+================================================================================
