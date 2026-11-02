@@ -59,6 +59,10 @@ results/metrics/*.csv
 results/metrics/*.json
 !results/metrics/.gitkeep
 
+# Model weights and binaries
+backend/models/*.joblib
+!backend/models/.gitkeep
+
 # IDE and OS files
 .vscode/
 .idea/
