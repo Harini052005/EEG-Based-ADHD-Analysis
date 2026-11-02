@@ -1,0 +1,82 @@
+================================================================================
+PHASE 3 EXECUTION REPORT: SPECTRAL FEATURE EXTRACTION (WELCH PSD & TBR)
+================================================================================
+Phase Name: Phase 3 - Spectral Feature Extraction
+Date Completed: November 2026
+Input File: preprocessed_epochs.npz (5,136 clean 2.0s epochs, 19 channels, 121 participants)
+Output Files:
+  - data/processed/features_extracted.csv (5,136 rows, 194 columns)
+  - data/processed/features_participant_level.csv (121 rows, 193 columns)
+  - results/figures/psd_and_features_comparison.png
+
+--------------------------------------------------------------------------------
+1. SPECTRAL EXTRACTION SPECIFICATIONS & METHODOLOGY
+--------------------------------------------------------------------------------
+* Method: Welch's Power Spectral Density (scipy.signal.welch)
+* Sampling Frequency (fs): 128 Hz
+* Window Size (nperseg): 256 samples (2.0 seconds)
+* Window Function: Hann window
+* Frequency Resolution (df): 0.50 Hz
+* Numerical Integration: Composite Trapezoidal Rule (scipy.integrate.trapezoid)
+* Frequency Band Definitions:
+    - Delta:  0.5 - 4.0 Hz
+    - Theta:  4.0 - 8.0 Hz
+    - Alpha:  8.0 - 13.0 Hz
+    - Beta:  13.0 - 30.0 Hz
+    - Total:  0.5 - 30.0 Hz (consistent with preprocessed filter passband)
+* Features Extracted Per Channel (19 channels):
+    1. Absolute Powers: [band]_abs for delta, theta, alpha, beta, total (5 features)
+    2. Relative Powers: [band]_rel = [band]_abs / total_abs for delta, theta, alpha, beta (4 features)
+    3. Clinical Ratio:  tbr = theta_abs / beta_abs (1 feature)
+    Total Per Channel: 10 features x 19 channels = 190 features per epoch.
+
+--------------------------------------------------------------------------------
+2. DATA INTEGRITY & SANITY CHECKS
+--------------------------------------------------------------------------------
+* Total Epochs Processed: 5,136
+    - ADHD Epochs:    2,930 (57.05%)
+    - Control Epochs: 2,206 (42.95%)
+* Total Participants: 121
+    - ADHD Children:    61 (50.41%)
+    - Control Children: 60 (49.59%)
+* Missing / NaN Values across all features: 0
+* Infinite Values across all features:      0
+* Zero Division Protection: Applied 1e-12 floor to denominators.
+
+--------------------------------------------------------------------------------
+3. DESCRIPTIVE STATISTICS FOR KEY FRONTAL & VERTEX SITES
+--------------------------------------------------------------------------------
+Participant-Level Distributions (Mean +/- Std):
+  - Fz Relative Theta:
+      ADHD:    0.2793 +/- 0.0575
+      Control: 0.2478 +/- 0.0643
+  - Cz Relative Theta:
+      ADHD:    0.2669 +/- 0.0671
+      Control: 0.2613 +/- 0.0703
+  - Fz Theta/Beta Ratio (TBR):
+      ADHD:    3.8883 +/- 1.6755
+      Control: 4.1341 +/- 1.8190
+  - Cz Theta/Beta Ratio (TBR):
+      ADHD:    4.1076 +/- 2.0054
+      Control: 4.7269 +/- 2.4329
+
+Scientific Observation on TBR:
+- High inter-individual variance is evident across both groups.
+- As warned in SKILL_updated.md, TBR exhibits notable overlap between groups
+  and must NOT be claimed as a standalone diagnostic biomarker, but rather
+  evaluated within multivariate machine-learning models.
+
+--------------------------------------------------------------------------------
+4. ANTI-LEAKAGE VERIFICATION FOR DOWNSTREAM PIPELINES
+--------------------------------------------------------------------------------
+- The output dataset strictly maintains the 'participant_id' and 'label' columns.
+- No cross-participant normalisation or feature scaling was performed here.
+- All scaling (StandardScaler / RobustScaler) and model fitting must be restricted
+  strictly within training folds in Phase 4 & Phase 5.
+
+--------------------------------------------------------------------------------
+5. STATUS & NEXT MILESTONE
+--------------------------------------------------------------------------------
+STATUS: PHASE 3 COMPLETED AND VERIFIED.
+Next Phase: Phase 4 - Participant-Wise Group Splitting (StratifiedGroupKFold)
+================================================================================

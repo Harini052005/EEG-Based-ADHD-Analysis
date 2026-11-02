@@ -17,7 +17,7 @@ EXPECTED_CHANNELS = [
     'O1', 'O2', 'F7', 'F8', 'T7', 'T8', 'P7', 'P8', 'Fz', 'Cz', 'Pz'
 ]
 
-SAMPLING_RATE = 128  # Hz (from dataset documentation)
+SAMPLING_RATE = 128  
 
 def run_audit():
     if not RAW_DATA_PATH.exists():
