@@ -119,3 +119,4 @@ export const Components = {
     tbody.innerHTML = html;
   }
 };
+

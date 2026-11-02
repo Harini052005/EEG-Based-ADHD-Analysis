@@ -182,3 +182,4 @@ class DataService:
 
 # Singleton instance
 data_service = DataService()
+
