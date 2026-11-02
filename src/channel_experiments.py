@@ -292,9 +292,8 @@ def save_metrics_summary(all_results, csv_path):
     for montage_name, m_dict in all_results.items():
         n_channels = len(MONTAGES[montage_name]["channels"])
         channel_list_str = ", ".join(MONTAGES[montage_name]["channels"])
-        for model_name, model_dict in m_dict.items():
-            if model_name == "pooled_epoch":
-                continue
+        for model_name in ["random_forest", "svm_rbf"]:
+            model_dict = m_dict[model_name]
             for level in ["epoch_level", "participant_level"]:
                 mean_m = model_dict[level]["mean"]
                 std_m = model_dict[level]["std"]
