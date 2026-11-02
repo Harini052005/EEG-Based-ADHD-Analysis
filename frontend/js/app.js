@@ -144,7 +144,7 @@ async function handleRunPrediction() {
   const montage = elements.predictMontageSelect.value;
 
   elements.runPredictBtn.disabled = true;
-  elements.runPredictBtn.textContent = "Running Pipeline...";
+  elements.runPredictBtn.textContent = "Analyzing Brain Waves...";
 
   try {
     const result = await API.predictParticipant(pId, model, montage);
@@ -153,7 +153,7 @@ async function handleRunPrediction() {
     alert("Prediction failed: " + err.message);
   } finally {
     elements.runPredictBtn.disabled = false;
-    elements.runPredictBtn.textContent = "Run Model Inference";
+    elements.runPredictBtn.textContent = "🚀 Test Child's Brain Waves";
   }
 }
 

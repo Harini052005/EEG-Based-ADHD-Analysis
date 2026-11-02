@@ -30,3 +30,14 @@ At the start of every session or task, always follow this strict sequence:
 ## 6. Git Push Protocol (Ask Before Pushing)
 * **Never push anything to GitHub without explicit user agreement.**
 * You may commit locally if appropriate, but you must ask and receive permission before running `git push`.
+
+## 7. Mandatory UI Theme & Color Palette (Always Remember)
+Whenever modifying, enhancing, or creating the UI/frontend, strictly use ONLY this designated color palette (from Color Hunt `https://colorhunt.co/palette/e11a45e3afc9efecd7edc92c`):
+* **#E11A45** (Primary Action / Vibrant Crimson-Rose)
+* **#EDC92C** (Warm Honey Yellow / Accent Highlights)
+* **#E3AFC9** (Soft Rose-Mauve / Gentle Badges & Secondary Accents)
+* **#EFECD7** (Warm Cream Ivory / Soft Background Surface)
+* **Design Guidelines**:
+  - Keep UI friendly, attractive, and pediatric-focused with child/pediatric icons (🧸, 👶, 🎈, 🧠, 🎧, 🌟).
+  - Use simple, plain English (no dense jargon).
+  - No unnecessary extra clutter; keep the dashboard focused, clean, and intuitive.
