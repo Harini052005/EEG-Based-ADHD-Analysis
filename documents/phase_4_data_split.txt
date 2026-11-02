@@ -1,0 +1,87 @@
+================================================================================
+PHASE 4 EXECUTION REPORT: PARTICIPANT-WISE GROUP SPLITTING (ANTI-LEAKAGE)
+================================================================================
+Phase Name: Phase 4 - Participant-Wise Group Splitting
+Date Completed: November 2026
+Input File: features_extracted.csv (5,136 clean epochs, 121 participants)
+Output Files:
+  - data/processed/features_with_splits.csv (Feature dataset with fold assignment)
+  - data/processed/cv_splits.json (Split metadata and sample indices)
+  - results/figures/cross_validation_split_distribution.png (Distribution visualization)
+
+--------------------------------------------------------------------------------
+1. SPLITTING METHODOLOGY & ANTI-LEAKAGE DESIGN
+--------------------------------------------------------------------------------
+* Cross-Validation Scheme: StratifiedGroupKFold
+* Number of Folds (K): 5
+* Grouping Identifier: 'participant_id' (each child is treated as an indivisible group)
+* Stratification Target: 'label' (ADHD: 1, Control: 0)
+* Random Seed: 42 (strictly reproducible)
+* Zero-Leakage Guarantee: Set intersection between train and test participants is EMPTY (0)
+  for every single fold. No child ever appears in both training and test partitions.
+
+--------------------------------------------------------------------------------
+2. FOLD-BY-FOLD DISTRIBUTION BREAKDOWN
+--------------------------------------------------------------------------------
+Fold 0:
+  - Participants:
+      Train: 97 children (49 ADHD, 48 Control)
+      Test:  24 children (12 ADHD, 12 Control)
+      Participant Overlap: 0 (PASSED)
+  - Epochs:
+      Train: 4,115 epochs (2,347 ADHD, 1,768 Control)
+      Test:  1,021 epochs (583 ADHD, 438 Control)
+
+Fold 1:
+  - Participants:
+      Train: 97 children (49 ADHD, 48 Control)
+      Test:  24 children (12 ADHD, 12 Control)
+      Participant Overlap: 0 (PASSED)
+  - Epochs:
+      Train: 4,105 epochs (2,344 ADHD, 1,761 Control)
+      Test:  1,031 epochs (586 ADHD, 445 Control)
+
+Fold 2:
+  - Participants:
+      Train: 96 children (48 ADHD, 48 Control)
+      Test:  25 children (13 ADHD, 12 Control)
+      Participant Overlap: 0 (PASSED)
+  - Epochs:
+      Train: 4,106 epochs (2,337 ADHD, 1,769 Control)
+      Test:  1,030 epochs (593 ADHD, 437 Control)
+
+Fold 3:
+  - Participants:
+      Train: 97 children (49 ADHD, 48 Control)
+      Test:  24 children (12 ADHD, 12 Control)
+      Participant Overlap: 0 (PASSED)
+  - Epochs:
+      Train: 4,109 epochs (2,345 ADHD, 1,764 Control)
+      Test:  1,027 epochs (585 ADHD, 442 Control)
+
+Fold 4:
+  - Participants:
+      Train: 97 children (49 ADHD, 48 Control)
+      Test:  24 children (12 ADHD, 12 Control)
+      Participant Overlap: 0 (PASSED)
+  - Epochs:
+      Train: 4,109 epochs (2,347 ADHD, 1,762 Control)
+      Test:  1,027 epochs (583 ADHD, 444 Control)
+
+--------------------------------------------------------------------------------
+3. RIGOROUS ANTI-LEAKAGE & PIPELINE ISOLATION VERIFICATION
+--------------------------------------------------------------------------------
+1. Subject Independence:
+   - Out of 121 unique children, each child is tested exactly once across the 5 folds.
+   - Test fold sizes range between 24 and 25 children, maintaining near-perfect 50/50 balance.
+2. Downstream Pipeline Safety:
+   - In Phase 5, all transformations (StandardScaler, feature selection, hyperparameters)
+     will be fitted EXCLUSIVELY on training folds via scikit-learn Pipeline.
+   - Test folds will remain completely untouched until model evaluation.
+
+--------------------------------------------------------------------------------
+4. STATUS & NEXT MILESTONE
+--------------------------------------------------------------------------------
+STATUS: PHASE 4 COMPLETED AND VERIFIED.
+Next Phase: Phase 5 - Baseline Classifiers (Random Forest & SVM Pipelines)
+================================================================================
