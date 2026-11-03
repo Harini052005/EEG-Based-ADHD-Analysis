@@ -27,9 +27,10 @@ At the start of every session or task, always follow this strict sequence:
 * **Do not assume anything.** If requirements, parameters, or configurations are ambiguous, ask the user directly before making decisions.
 * When in doubt, ask immediately.
 
-## 6. Git Push Protocol (Ask Before Pushing)
-* **Never push anything to GitHub without explicit user agreement.**
-* You may commit locally if appropriate, but you must ask and receive permission before running `git push`.
+## 6. Git Commit & Push Protocol (Manual Only)
+* **Never run `git commit` or `git push` for any reason, at any time.**
+* All Git operations — staging, committing, and pushing — are done **manually by the user only**.
+* Only make file changes; leave all version control actions entirely to the user.
 
 ## 7. Mandatory UI Theme & Color Palette (Always Remember)
 Whenever modifying, enhancing, or creating the UI/frontend, strictly use ONLY this designated color palette (from Color Hunt `https://colorhunt.co/palette/e11a45e3afc9efecd7edc92c`):
